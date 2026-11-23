@@ -1,0 +1,55 @@
+# docker-compose.yml
+# Infraestrutura do TCC: Prefect Server + PostgreSQL
+# Sobe com: docker-compose up -d
+# Prefect UI: http://localhost:4200
+#
+# Este Postgres hospeda DOIS bancos:
+#   - prefect : banco interno do Prefect (metadados de execucao)
+#   - rpa     : banco da aplicacao (colaboradores, execucoes, logs)
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: tcc_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: prefect
+      POSTGRES_PASSWORD: prefect
+      POSTGRES_DB: prefect
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Script que cria o segundo banco (rpa) na primeira subida
+      - ./init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U prefect"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tcc-net
+
+  prefect-server:
+    image: prefecthq/prefect:3-latest
+    container_name: tcc_prefect_server
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PREFECT_API_DATABASE_CONNECTION_URL: postgresql+asyncpg://prefect:prefect@postgres:5432/prefect
+      PREFECT_SERVER_API_HOST: 0.0.0.0
+      PREFECT_UI_API_URL: http://localhost:4200/api
+    command: prefect server start --host 0.0.0.0 --port 4200
+    ports:
+      - "4200:4200"
+    networks:
+      - tcc-net
+
+volumes:
+  postgres_data:
+
+networks:
+  tcc-net:
+    driver: bridge

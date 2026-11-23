@@ -1,0 +1,14 @@
+# Credenciais e configuracoes locais (NUNCA versionar)
+.env
+
+# Ambiente virtual e caches do Python
+venv_tcc/
+__pycache__/
+*.pyc
+
+# Planilhas ja processadas pelo monitoramento
+data/entrada/processados/
+data/entrada/erro/
+
+# Arquivos temporarios do Excel
+~$*

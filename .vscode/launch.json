@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // Debuga o arquivo aberto no editor, com a raiz do projeto no
+            // PYTHONPATH para que os imports "from src.xxx" funcionem.
+            "name": "Python: arquivo atual (raiz do projeto)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            // Equivale a rodar "python -m src.fluxo" na raiz do projeto.
+            "name": "Python: fluxo Prefect (src.fluxo)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.fluxo",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
