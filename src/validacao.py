@@ -102,7 +102,7 @@ if __name__ == "__main__":
     registros = validar_planilha(caminho)
 
     validos = [r for r in registros if r["valido"]]
-    invalidos = [r for r in registros if not r["valido"]]
+    invalidos = [r for r in registros if not r["valido"]] 
 
     print(f"Total de registros : {len(registros)}")
     print(f"Validos            : {len(validos)}")
